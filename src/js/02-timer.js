@@ -10,18 +10,18 @@ const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
 const startDateEl = document.querySelector('#datetime-picker');
 const startBtnEl = document.querySelector('[data-start]');
-
 startBtnEl.setAttribute('disabled', true);
+
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0].getTime() >= options.defaultDate.getTime()) {
-      startBtnEl.removeAttribute('disabled');
-    } else {
+    if (selectedDates[0].getTime() < options.defaultDate.getTime()) {
       window.alert('Please choose a date in the future');
+    } else {
+      startBtnEl.removeAttribute('disabled');
     }
   },
 };
@@ -43,6 +43,10 @@ function timer() {
 
 startBtnEl.addEventListener('click', () => {
   const intervalId = setInterval(timer, 1000);
+
+  startDateEl.setAttribute('disabled', true);
+  startBtnEl.setAttribute('disabled', true);
+
   if ((difference = 0)) {
     clearInterval(intervalId);
   }
