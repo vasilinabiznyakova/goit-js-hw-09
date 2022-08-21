@@ -10,6 +10,7 @@ const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
 const startDateEl = document.querySelector('#datetime-picker');
 const startBtnEl = document.querySelector('[data-start]');
+let intervalId = 0;
 startBtnEl.setAttribute('disabled', true);
 
 const options = {
@@ -28,29 +29,14 @@ const options = {
 
 flatpickr('#datetime-picker', options);
 
-function timer() {
-  const currentDate = new Date();
-  const startDate = new Date(startDateEl.value);
-  const difference = startDate - currentDate;
-
-  const { days, hours, minutes, seconds } = convertMs(difference);
-
-  daysEl.textContent = days;
-  hoursEl.textContent = hours;
-  minutesEl.textContent = minutes;
-  secondsEl.textContent = seconds;
+function countTime() {
+  intervalId = setInterval(() => {
+    makeTimerOptionsInactive();
+    updateTime();
+  }, 1000);
 }
 
-startBtnEl.addEventListener('click', () => {
-  const intervalId = setInterval(timer, 1000);
-
-  startDateEl.setAttribute('disabled', true);
-  startBtnEl.setAttribute('disabled', true);
-
-  if ((difference = 0)) {
-    clearInterval(intervalId);
-  }
-});
+startBtnEl.addEventListener('click', countTime);
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
@@ -75,4 +61,25 @@ function convertMs(ms) {
   );
 
   return { days, hours, minutes, seconds };
+}
+
+function makeTimerOptionsInactive() {
+  startDateEl.setAttribute('disabled', true);
+  startBtnEl.setAttribute('disabled', true);
+}
+
+function updateTime() {
+  const currentDate = new Date().getTime();
+  const startDate = new Date(startDateEl.value).getTime();
+  const difference = startDate - currentDate;
+
+  const { days, hours, minutes, seconds } = convertMs(difference);
+
+  daysEl.textContent = days;
+  hoursEl.textContent = hours;
+  minutesEl.textContent = minutes;
+  secondsEl.textContent = seconds;
+  if (difference <= 1000) {
+    clearInterval(intervalId);
+  }
 }
